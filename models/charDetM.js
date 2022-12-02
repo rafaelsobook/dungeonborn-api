@@ -28,6 +28,7 @@ const charSchema = new Schema({
     profession: { name: String, rank: Number},
     clearedQuests: Number,
     currentPlace: String,
+    places: { type: Array, default: [] },
     morale: { hunger: Number, thirst: Number},
     status: { type: Array, default: []},
     regens: {sp: Number, hp: Number, mana: Number}

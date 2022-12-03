@@ -62,8 +62,17 @@ router.patch("/updateloc/:id", auth, async (req,res) => {
 router.patch("/updateplace/:id", auth, async (req,res) => {
 
     try {
-  
-        const characterUpdated = await Character.findByIdAndUpdate(req.params.id, {currentPlace: req.body.currentPlace}, {new: true})
+        const ourDetails = await Character.findById(req.params.id)
+        if(!ourDetails) return res.json({message: "not found our details"}).status(400)
+        const curPlace = req.body.currentPlace
+        const hadVisited = ourDetails.places.some(placeName => placeName == curPlace)
+        let myPlaces
+        if(!hadVisited){
+            myPlaces = [...ourDetails.places, curPlace]
+        }else{
+            myPlaces = ourDetails.places
+        }
+        const characterUpdated = await Character.findByIdAndUpdate(req.params.id, {currentPlace: req.body.currentPlace, places: myPlaces}, {new: true})
 
         res.json(characterUpdated)
         log(characterUpdated)
@@ -126,17 +135,32 @@ router.patch("/deductitem/:id", auth, async (req,res) => {
         res.json(error).status(400)
     }
 })
+router.patch("/updateall/:id", auth, async (req,res) => {
+
+    try {
+        const character = await Character.findById(req.params.id)
+        if(!character) return res.json("notfound").status(400)
+
+
+        const theCharac = await Character.findByIdAndUpdate(req.params.id, req.body, {new: true})
+
+        res.json(theCharac)
+    } catch (error) {
+        res.json(error).status(400)
+    }
+})
 // update haveBot to false after bot destroyed !
-router.patch("/botdestroyed/:id", async (req,res) => {
+router.delete("/delete/:id", async (req,res) => {
+    try{
+        const theChar = await Character.findById(req.params.id)
+        if(!theChar) return res.json({message: "not found char"})
+        await Character.findByIdAndDelete(req.params.id)
+    }catch(err){
+        res.json(err).status(400)
+    }
+    log("deleted successfully")
+    res.json(await Character.find())
 
-    // try {
-    //     const updatedUzer = await Users.findByIdAndUpdate(req.params.id,{haveBot: false}, {new: true})
-
-    //     res.send(updatedUzer)
-    // } catch (error) {
-    //     res.send(error).status(400)
-    //     log(error)
-    // }
 })
 
 module.exports = router

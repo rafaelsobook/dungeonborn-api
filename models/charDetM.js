@@ -4,13 +4,17 @@ const { Schema, model } = require("mongoose")
 const charSchema = new Schema({
     owner: String,
     name: String,
-    stats: { str: Number, spd: Number, def: Number},
+    stats: { sword: Number, def: Number, core: Number, magic: Number, spd: Number},
+    lvl: { type: Number, default: 1},
+    rank: { type: String, default: 'F'},
     hp: { type: Number, default: 300},
     maxHp: { type: Number, default: 300},
     mp: { type: Number, default: 100},
     maxMp: { type: Number, default: 100},
     sp: { type: Number, default: 100},
     maxSp: { type: Number, default: 100},
+    exp: { type: Number, default: 0},
+    maxExp: { type: Number, default: 100},
     x:{ type: Number, default: 0},
     z:{ type: Number, default: 0},
     weapon: { itemId: String, name: String, itemType: String, plusDef: Number, plusDmg: Number, 
@@ -31,7 +35,8 @@ const charSchema = new Schema({
     places: { type: Array, default: [] },
     morale: { hunger: Number, thirst: Number},
     status: { type: Array, default: []},
-    regens: {sp: Number, hp: Number, mana: Number}
+    regens: {sp: Number, hp: Number, mana: Number},
+    points: { type: Number, default: 1}
 })
 
 module.exports = CharModel = model("character", charSchema)

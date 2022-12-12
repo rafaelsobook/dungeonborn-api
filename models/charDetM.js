@@ -23,6 +23,7 @@ const charSchema = new Schema({
     pants: String,
     hair: String,
     boots: String,
+    hairColor: {r: Number, g: Number, b: Number},
     armor:{ itemId: String, name: String, itemType: String, plusDef: Number, plusDmg: Number, 
     magRes: Number, plusMag: Number, price: Number},
     items: [{ itemId: String, name: String, itemType: String, plusDef: Number, plusDmg: Number, 

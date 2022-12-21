@@ -85,6 +85,18 @@ router.patch("/additem/:id", auth, async (req,res) => {
     try {
         const character = await Character.findOne({owner: req.params.id})
         if(!character) return res.json("notfound")
+        const cannotDuplicates = ['sword', 'armor']
+        let canDuplicate = true
+        cannotDuplicates.forEach(itemName => {
+            if(itemName === req.body.itemType) canDuplicate = false            
+        })
+        
+        if(!canDuplicate){
+            log("cannot duplicate ")
+            character.items.push(req.body)
+            const theCharac = await Character.findByIdAndUpdate(character._id, character, {new: true})
+            return res.json(theCharac)
+        }
         const isHave = character.items.some(item => item.name === req.body.name)
         if(isHave){
             character.items.map(item => item.name === req.body.name ? {...item, qnty: item.qnty+=req.body.qnty } : item)
@@ -93,7 +105,6 @@ router.patch("/additem/:id", auth, async (req,res) => {
         }
 
         const theCharac = await Character.findByIdAndUpdate(character._id, character, {new: true})
-
         res.json(theCharac)
     } catch (error) {
         res.json(error).status(400)
@@ -116,18 +127,18 @@ router.patch("/deductitem/:id", auth, async (req,res) => {
 
     try {
         const character = await Character.findById(req.params.id)
-        if(!character) return res.json("notfound")
-        const theItem = character.items.find(item => item.name === req.body.name)
-        if(!theItem) return res.json("item notfound")
+        if(!character) return log("notfound")
+        const theItem = character.items.find(item => item.meshId === req.body.meshId)
+        if(!theItem) return log("item notfound")
         let newArr
+        log(theItem)
         if(theItem){
             if(theItem.qnty === 1){
-                newArr = character.items.filter(item => item.name !== req.body.name)
+                newArr = character.items.filter(item => item.meshId !== req.body.meshId)
             }else{
-                newArr = character.items.map(item => item.name === req.body.name ? {...item, qnty: item.qnty-=req.body.qnty } : item)
+                newArr = character.items.map(item => item.meshId === req.body.meshId ? {...item, qnty: item.qnty-=req.body.qnty } : item)
             }
         }
-
         const theCharac = await Character.findByIdAndUpdate(character._id, {items: newArr}, {new: true})
 
         res.json(theCharac)

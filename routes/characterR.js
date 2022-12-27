@@ -124,14 +124,13 @@ router.patch("/updateweapon/:id", auth, async (req,res) => {
     }
 })
 router.patch("/deductitem/:id", auth, async (req,res) => {
-
     try {
         const character = await Character.findById(req.params.id)
         if(!character) return log("notfound")
         const theItem = character.items.find(item => item.meshId === req.body.meshId)
         if(!theItem) return log("item notfound")
         let newArr
-        log(theItem)
+
         if(theItem){
             if(theItem.qnty === 1){
                 newArr = character.items.filter(item => item.meshId !== req.body.meshId)

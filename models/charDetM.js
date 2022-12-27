@@ -28,16 +28,17 @@ const charSchema = new Schema({
     magRes: Number, plusMag: Number, price: Number},
     items: [{ meshId: String, name: String, itemType: String, plusDef: Number, plusDmg: Number, 
     magRes: Number, plusMag: Number, price: Number, qnty: Number}],
+    skills: [{skillId: String, name: String, power: Number, demand: {name: String, cost: Number}, rank: String, skillType: String}],
     killQuest: [{questId: String, title: String, def: String, reward: Number, demandKills: Number, kills: Number}],
     titles: { type: Array, default: [] },
     profession: { name: String, rank: Number},
     clearedQuests: Number,
     currentPlace: String,
-    places: { type: Array, default: [] },
-    morale: { hunger: Number, thirst: Number},
-    status: { type: Array, default: []},
+    places: { type: Array, default: [] }, 
+    status: { type: Array, default: []}, // sickness //poisoned etc
     regens: {sp: Number, hp: Number, mana: Number},
-    points: { type: Number, default: 1}
+    points: { type: Number, default: 1},
+    coins: { type: Number, default: 5000 }
 })
 
 module.exports = CharModel = model("character", charSchema)
